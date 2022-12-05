@@ -2,13 +2,9 @@ import React from "react";
 import styled, { css } from "styled-components";
 
 interface ButtonProps {
-  children: React.ReactNode;
-  className: string;
+  children?: React.ReactNode;
+  className: "add" | "close" | "work" | "done";
   onClick: () => void;
-  add?: string;
-  close?: string;
-  work?: string;
-  done?: string;
 }
 
 const Button = ({ children, className, onClick }: ButtonProps) => {
@@ -56,6 +52,15 @@ const CustomButton = styled.button<ButtonProps>`
           color: #fff;
           cursor: pointer;
           transform: rotate(45deg);
+        `
+      : props.className === "work"
+      ? css`
+          width: 30px;
+          height: 30px;
+          border-radius: 100%;
+          background-color: transparent;
+          border: 1px solid #dfe3e7;
+          cursor: pointer;
         `
       : null}
 `;

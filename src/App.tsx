@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
 import Button from "./components/Button";
 import Todo from "./components/Todo";
+import { nanoid } from "nanoid";
+import { TodoProvider, useTodoDispatch, useTodoState } from "./TodoContext";
 
 function App() {
   const GlobalStyle = createGlobalStyle`
@@ -10,9 +12,20 @@ function App() {
     background-color: #e9ecf0;
   }
 `;
+
+  const todoList = useTodoState();
+  const dispatch = useTodoDispatch();
+
+  console.log(todoList);
+
   const [openTodoInput, setOpenTodoInput] = useState<boolean>(false);
   const [task, setTask] = useState<string>("");
-  const [todoList, setTodoList] = useState<string[]>([]);
+
+  const addTodo = () =>
+    dispatch({ type: "ADD_TODO", id: nanoid(), todo: task, done: false });
+  const deleteTodo = (id: string) => dispatch({ type: "DELETE_TODO", id: id });
+  const toggleTodo = (id: string, done: boolean) =>
+    dispatch({ type: "TOGGLE_TODO", id: id, done: done });
 
   const onChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -23,13 +36,13 @@ function App() {
   const onAddHandler = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === "Enter" && event.nativeEvent.isComposing === false) {
       event.preventDefault();
-      setTodoList([...todoList, task]);
+      addTodo();
       setTask("");
     }
   };
 
   return (
-    <>
+    <TodoProvider>
       <GlobalStyle />
       <Box>
         <Info className="info">
@@ -40,7 +53,7 @@ function App() {
           <Remainder className="remainder">할 일 2개 남음</Remainder>
         </Info>
         <TodoList className="todo-list">
-          {todoList && todoList.map((todo) => <Todo todo={todo} />)}
+          {todoList && todoList.map((todo) => <Todo key={todo.id} {...todo} />)}
         </TodoList>
         <InputBox className="input-box" bgColor={openTodoInput}>
           {openTodoInput && (
@@ -65,7 +78,7 @@ function App() {
           </Button>
         )}
       </Box>
-    </>
+    </TodoProvider>
   );
 }
 
