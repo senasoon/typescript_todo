@@ -1,7 +1,7 @@
 import React, { useReducer, useContext, createContext, Dispatch } from "react";
 
 // Todo type
-export interface TodoList {
+export interface Todos {
   id: string;
   todo: string;
   done: boolean;
@@ -17,11 +17,11 @@ type Action =
 type TodoDispatch = Dispatch<Action>;
 
 // Context
-const TodoStateContext = createContext<TodoList[] | null>([]);
+const TodoStateContext = createContext<Todos[] | null>([]);
 const TodoDispatchContext = createContext<TodoDispatch | null>(null);
 
 // reducer
-function reducer(state: TodoList[], action: Action): TodoList[] {
+function reducer(state: Todos[], action: Action): Todos[] {
   switch (action.type) {
     case "ADD_TODO":
       return state.concat({
@@ -30,11 +30,11 @@ function reducer(state: TodoList[], action: Action): TodoList[] {
         done: action.done,
       });
     case "TOGGLE_TODO":
-      return state.map((todo: TodoList) =>
+      return state.map((todo: Todos) =>
         todo.id === action.id ? { ...todo, done: !todo.done } : todo
       );
     case "DELETE_TODO":
-      return state.filter((todo: TodoList) => todo.id !== action.id);
+      return state.filter((todo: Todos) => todo.id !== action.id);
     default:
       throw new Error("Unhandled action");
   }
